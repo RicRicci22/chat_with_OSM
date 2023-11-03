@@ -5,9 +5,7 @@ This repo contains the code to run a LLM agent that can describe remote sensing 
 
 Clone the LLaVA repo:
     
-    ```
-    git clone https://github.com/haotian-liu/LLaVA.git
-    ```
+git clone https://github.com/haotian-liu/LLaVA.git
 
 and install the requirements of this repo in a new conda environment
 
