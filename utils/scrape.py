@@ -247,6 +247,7 @@ def proj_lat_lon_on_image(bbox, osm_data, nodes):
         (start_lat + i * lat_increment, start_lon + j * lon_increment)
         for i in range(3) for j in range(3)
     ]
+
     placing_identifiers = ["bottom left", "bottom center", "bottom right", "center left", "center", "center right", "top left", "top center", "top right"]
     
     # Convert each element position in osm_data in an identifier, based on the closest tile center
@@ -258,6 +259,7 @@ def proj_lat_lon_on_image(bbox, osm_data, nodes):
             lat, lon = element["lat"], element["lon"]
         elif element["type"]=="way":
             # First get the center
+            print(element)
             lat, lon = get_center_way(element["nodes"], nodes)
         else:
             raise ValueError("Element type not yet supported!")
