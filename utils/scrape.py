@@ -77,7 +77,7 @@ def get_rbg_image(bbox):
     response = requests.get(url)
 
     if response.status_code == 200:
-        image = Image.open(BytesIO(response.content))
+        image = Image.open(BytesIO(response.content)).convert("RGB")
         return image
     else:
         print(f"Failed to get image: {response.content}")
@@ -284,7 +284,7 @@ def get_isolated_nodes(osm_data):
     for element in osm_data['elements']:
         if element['type'] == "node" and "tags" not in element.keys():
             nodes[element['id']] = (element['lat'], element['lon'])
-        else:
+        elif "tags" in element.keys():
             filtered["elements"].append(element)
             
     return nodes, filtered

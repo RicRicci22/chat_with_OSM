@@ -3,13 +3,12 @@ This script launch a webapp that let you choose a bounding box and download the 
 '''
 import folium
 import streamlit as st
-import matplotlib.pyplot as plt
 from folium.plugins import Draw
 from streamlit_folium import st_folium
 
 from utils.scrape import fetch_overpass_data, get_rbg_image, get_isolated_nodes, proj_lat_lon_on_image
 from utils.model import chatModel
-from utils.retrieval_utils import evaluate_similarity
+from utils.retrieval_utils import evaluate_similarity, encode_information
 from LLaVA.llava.mm_utils import tokenizer_image_token, tokenizer_image_token, KeywordsStoppingCriteria
 from LLaVA.llava.mm_utils import process_images
 from LLaVA.llava.constants import DEFAULT_IMAGE_TOKEN, IMAGE_TOKEN_INDEX
@@ -36,7 +35,7 @@ def get_bbox_bltr(bbox_coords):
 # Let the user choose the model
 model = st.sidebar.selectbox(
     'Choose the model',
-    ('llava2',)
+    ('llava2-7b',)
 )
 
 if 'controller' not in st.session_state:
@@ -46,7 +45,7 @@ if 'controller' not in st.session_state:
 # Load the model
 if st.sidebar.button('Load model'):
     device = "cuda:0"
-    if model == 'llava2':
+    if model == 'llava2-7b':
         if "controller" in st.session_state:
             st.session_state["controller"].load_model(device=device)
 
@@ -60,23 +59,28 @@ if st.button('Proceed'):
     # bbox = (bottom, left, top, right)
     
     image = get_rbg_image(bbox) # PIL Image
-    plt.imshow(image)
-    plt.savefig("image.png")
     st.image(image)
     
     osm_data = fetch_overpass_data(bbox)
+    #print(osm_data)
     
-    osm_data = fetch_overpass_data(bbox)
     nodes, filtered = get_isolated_nodes(osm_data)
     located_elements = proj_lat_lon_on_image(bbox, filtered, nodes)
+    elements, elements_embeddings = encode_information(located_elements)
     #filtered_data = filter_osm_data(located_elements, elements_to_keep=["amenity", "building", "leisure"])
     
     # Start the chat by first describing the image 
     controller = st.session_state["controller"]
     
     controller.start_chat()
-    prompt = "Give a detailed description of this satellite image."
-    prompt = DEFAULT_IMAGE_TOKEN + '\n' + prompt
+    
+    # prompt="You are an assistant that can understand image contents and interact with me using text. I provided an image to you, for which I will sumbit queries. " \
+    #         "You must analyze the query and decide if you can answer directly using your capabilities or if you need more information. " \
+    #         "Since you are very good at understanding general concepts in the image, you can directly answer when the user asks for general information. However, if you are uncertain about the answer, you must ask for more information. " \
+    #         "This is extremely useful when the user ask for specific information about the area in the image, such as the existance of particular structures (church, hospital, post office), names of the things in the image, addresses and so on. " \
+    #         "To ask for more information you must reply just with the keyword 'get more data'. Let's start!"
+    
+    prompt = DEFAULT_IMAGE_TOKEN + '\n'
     controller.append_message(controller.conversation.roles[0], prompt)
     controller.append_message(controller.conversation.roles[1], None)
     prompt = controller.get_prompt()
@@ -98,7 +102,9 @@ if st.button('Proceed'):
     controller.conversation.messages[-1][-1] = out
     
     # Append information of osm to the chat
-    info_addition = "I will provide a list of informations about the area in the image. Each piece is enclosed by curly brakets. Use them to find the answer of the user's question, but don't reference to the pieces of information directly.\n"
+    info_addition = " Here is some external informations about the area in the image. Each piece is enclosed by curly brakets." \
+                    "If you find them useful to answer to the user, use them. Answer concisely and clearly to the questions. " \
+                    "If the user is satisfied, reply with kind words and wait for the next question." \
     
     streamer = TextStreamer(controller.tokenizer, skip_prompt=True, skip_special_tokens=True)
     
@@ -113,30 +119,36 @@ if st.button('Proceed'):
         
         print(f"{controller.conversation.roles[1]}: ", end="")
         
-        # Read the other question from CLI 
-        # Retrieve the most similar "sentences"
-        information = evaluate_similarity(inp, located_elements, prob=0.9)
-        prompt = info_addition 
-        for info in information:
-            prompt+="{"+info+"}"+"\n"
-        prompt+=inp
-
+        # Read the other question from CLI and retrieve the information
+        information = evaluate_similarity(inp, elements, elements_embeddings)
+        prompt = inp 
+        
+        # Insert info if necessary
+        if len(information)!=0:
+            prompt += info_addition + "\n"
+            for info in information:
+                prompt+="{"+info+"}"+"\n"
+        
+        #inp+=" If you need more information, reply with the keyword 'get more data'."
         controller.append_message(controller.conversation.roles[0], prompt)
         controller.append_message(controller.conversation.roles[1], None)
         
         prompt = controller.get_prompt()
         
         print(prompt)
+        print("\n")
         
         input_ids = tokenizer_image_token(prompt, controller.tokenizer, IMAGE_TOKEN_INDEX, return_tensors='pt').unsqueeze(0).to(controller.device)
         keywords = ["</s>"]
         stopping_criteria = KeywordsStoppingCriteria(keywords, controller.tokenizer, input_ids)
-        temperature = 0.7
+        temperature = 0.2
         max_new_tokens = 512
         
         out = controller.generate(input_ids, image_tensor, temperature=temperature, max_new_tokens=max_new_tokens, stopping_criteria=stopping_criteria, streamer=streamer)
         
         controller.conversation.messages[-1][-1] = out
+        controller.conversation.messages[-2][-1] = inp 
         
+        prompt=""
         
 
