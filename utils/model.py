@@ -2,7 +2,6 @@
 This module contains all the functions that controls the model creation, the functionalities, the tokenization and so on
 '''
 import torch
-
 from LLaVA.llava.utils import disable_torch_init
 from LLaVA.llava.model.builder import load_pretrained_model
 from LLaVA.llava.mm_utils import get_model_name_from_path

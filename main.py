@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from folium.plugins import Draw
 from streamlit_folium import st_folium
 
-from utils.scrape import fetch_overpass_data, get_rbg_image, filter_osm_data, get_isolated_nodes, proj_lat_lon_on_image
+from utils.scrape import fetch_overpass_data, get_rbg_image, get_isolated_nodes, proj_lat_lon_on_image
 from utils.model import chatModel
 from utils.retrieval_utils import evaluate_similarity
 from LLaVA.llava.mm_utils import tokenizer_image_token, tokenizer_image_token, KeywordsStoppingCriteria
