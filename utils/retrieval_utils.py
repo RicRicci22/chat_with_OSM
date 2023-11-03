@@ -27,7 +27,7 @@ def convert_dict_to_sentence(list_elements:List[Dict]):
     return sentences
         
 
-def evaluate_similarity(query, list_elements, k=5):
+def evaluate_similarity(query, list_elements, k=None, prob=None):
     '''
     Function to evaluate the similarity between a query and a list of sentences
     Inputs:
@@ -51,5 +51,15 @@ def evaluate_similarity(query, list_elements, k=5):
     # Sort the similarities, keeping the index, to retrieve the elements 
     similarities = sorted(enumerate(similarities), key=lambda x: x[1], reverse=True)
     
-    # Return the sentences
-    return [sentences[i[0]] for i in similarities[:k]]
+    if k!=None:
+        # Return the sentences
+        return [sentences[i[0]] for i in similarities[:k]]
+    elif prob!=None:
+        # Return all the sentences whose cumulative probability is greater than prob
+        cumulative_prob = 0
+        for i in similarities:
+            cumulative_prob+=i[1]
+            if cumulative_prob>=prob:
+                return [sentences[i[0]] for i in similarities[:i[0]+1]]
+    else:
+        ValueError("You must specify either k or prob")

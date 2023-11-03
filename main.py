@@ -115,7 +115,7 @@ if st.button('Proceed'):
         
         # Read the other question from CLI 
         # Retrieve the most similar "sentences"
-        information = evaluate_similarity(inp, located_elements, k=5)
+        information = evaluate_similarity(inp, located_elements, prob=0.9)
         prompt = info_addition 
         for info in information:
             prompt+="{"+info+"}"+"\n"
