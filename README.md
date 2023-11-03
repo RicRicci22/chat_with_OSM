@@ -1,27 +1,37 @@
 # chat_with_OSM
-This repo contains the code to run a LLM agent that can describe remote sensing images with the aid of data from openstreetmap
+LLM agents that interact with OpenStreetMap data through a chat interface to answer questions in a more informed way. 
 
 ## Installation
 
-Clone the LLaVA repo:
-    
-git clone https://github.com/haotian-liu/LLaVA.git
+1) Create a virtual environment and activate it
+```Shell
+conda create -n osmChat python=3.10 -y
+conda activate osmChat
+```
 
-and install the requirements of this repo in a new conda environment
+2) Clone the repo:
+```Shell
+git clone https://github.com/RicRicci22/chat_with_OSM.git
+```
 
+3) Enter the LLaVA directory and install the requirements
+```Shell
+pip install --upgrade pip
+pip install -e .
+```
 
-Install the requirements of this repo
-    
-        ```
-        pip install -r requirements.txt
-        ```
+4) Go back to the main directory and install the requirements
+```Shell
+pip install -r requirements.txt
+```
 
 ## Lauch the app
 
 To launch the app, run the following command in the terminal:
 
-    ```
-    streamlit run main.py
-    ```
+```Shell
+streamlit run main.py
+```
 
-Follow the instructions on screen and explore the images.
+## Usage
+
