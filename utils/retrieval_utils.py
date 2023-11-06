@@ -4,7 +4,19 @@ This module serves as a container of functions needed for retrieval
 
 from sentence_transformers import SentenceTransformer
 from typing import List, Dict
-from sklearn.metrics.pairwise import cosine_similarity
+
+
+def count_buildings(list_elements:List[Dict]):
+    '''
+    This function counts the number of buildings in a list of elements
+    '''
+    count = 0
+    for element in list_elements:
+        #print(element)
+        if "building" in element.keys():
+            count+=1
+    
+    return "there are "+str(count)+" buildings in the image"
 
 def convert_dict_to_sentence(list_elements:List[Dict]):
     sentences = []
@@ -27,6 +39,7 @@ def convert_dict_to_sentence(list_elements:List[Dict]):
         sentence=""
     
     sentences = list(set(sentences)) # remove duplicates
+    sentences.append(count_buildings(list_elements))
     
     return sentences
 
@@ -41,7 +54,7 @@ def encode_information(list_elements):
     
     return sentences, sentence_embeddings
 
-def evaluate_similarity(query, sentences, elements_embeddings):
+def evaluate_similarity(query, elements_textual, elements_embeddings):
     '''
     Function to evaluate the similarity between a query and a list of sentences
     Inputs:
@@ -50,7 +63,7 @@ def evaluate_similarity(query, sentences, elements_embeddings):
     Outputs:
         the list of similarities
     '''
-    model = SentenceTransformer('BAAI/bge-small-en-v1.5') # sentence-transformers/all-MiniLM-L6-v2
+    model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2') # sentence-transformers/all-MiniLM-L6-v2
     
     # Encode the query
     query_embedding = model.encode(query, normalize_embeddings=True).reshape(1, -1)
@@ -59,7 +72,9 @@ def evaluate_similarity(query, sentences, elements_embeddings):
     similarities = list(similarities.squeeze())
     # Sort the similarities, keeping the index, to retrieve the elements 
     similarities = sorted(enumerate(similarities), key=lambda x: x[1], reverse=True)
-    print(similarities)
+    
+    # Return the first 2 results
+    return [elements_textual[i[0]] for i in similarities[:2]]
     
     # Return all the sentences that have a similarity of 0.4 or higher
-    return [sentences[i[0]] for i in similarities if i[1]>=0.4]
+    #return [elements_textual[i[0]] for i in similarities if i[1]>=0.4]

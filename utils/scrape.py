@@ -215,7 +215,7 @@ def get_center_way(nodes_id, nodes, debug=False):
         
 
 
-def proj_lat_lon_on_image(bbox, osm_data, nodes):
+def proj_lat_lon_on_image(bbox, elements, nodes):
     '''
     This function takes a list of osm elements and project the location based on the bounding box. 
     It divides the image in 9 portions, denominated as 
@@ -232,6 +232,14 @@ def proj_lat_lon_on_image(bbox, osm_data, nodes):
     |   Bottom Left   |   Bottom Center |   Bottom Right  |
     |                 |                 |                 |
     |-----------------|-----------------|-----------------|
+    
+    Input: 
+        bbox: the bounding box of the image
+        elements: the list of osm elements (all have the "tags" key)
+        nodes: the list of nodes (all pure nodes, without the "tags" key)
+        
+    Output:
+        located_elements: the list of elements with the "position" key, that indicates the position of the element in the image. Only the "tags" information is kept at this point, since all the other info are already in the position.
     '''
     bottom, left, top, right = bbox
     # Calculate the increments for latitude and longitude to split into three equal parts
@@ -253,13 +261,13 @@ def proj_lat_lon_on_image(bbox, osm_data, nodes):
     # Convert each element position in osm_data in an identifier, based on the closest tile center
     # Approximate using the euclidean distance on latitude and longitude coordinates
     located_elements = []
-    for element in osm_data['elements']:
+    for element in elements:
         assert "tags" in element.keys(), "Error in the prior filtering of nodes!"
         if element["type"]=="node":
             lat, lon = element["lat"], element["lon"]
         elif element["type"]=="way":
             # First get the center
-            print(element)
+            #print(element)
             lat, lon = get_center_way(element["nodes"], nodes)
         else:
             raise ValueError("Element type not yet supported!")
@@ -277,19 +285,27 @@ def proj_lat_lon_on_image(bbox, osm_data, nodes):
     
     return located_elements
         
-def get_isolated_nodes(osm_data):
+def get_pure_nodes(osm_data):
     '''
-    This function returns a list of nodes that are not part of any way. 
+    This function filter nodes that are likely part of a way (nodes that does not have the "tags" key).
+    
+    Input:
+        osm_data: the osm data as a string in json format
+    
+    Output:
+        pure_nodes: a dictionary containing pure nodes (without "tags"), with id as keys and the (lat,long) coordinates as values.
+        filtered_data: a list of elements without the nodes that are part of a way. All the elements are dicts, and have the "tags" key.
     '''
-    nodes = {}
-    filtered = {"elements":[]}
+    pure_nodes = {}
+    filtered_data = []
+    
     for element in osm_data['elements']:
         if element['type'] == "node" and "tags" not in element.keys():
-            nodes[element['id']] = (element['lat'], element['lon'])
+            pure_nodes[element['id']] = (element['lat'], element['lon'])
         elif "tags" in element.keys():
-            filtered["elements"].append(element)
+            filtered_data.append(element)
             
-    return nodes, filtered
+    return pure_nodes, filtered_data
 
 if __name__ == "__main__":
     #     /*
@@ -313,7 +329,7 @@ if __name__ == "__main__":
     bottom, left, top, right = 46.04496229703382,10.98408579826355,46.04642930052508,10.986006259918213  # Parco Nadac, in Calavino, my place :)
     bbox = (bottom, left, top, right)
     osm_data = fetch_overpass_data(bbox)
-    nodes, filtered = get_isolated_nodes(osm_data)
+    nodes, filtered = get_pure_nodes(osm_data)
     located_elements = proj_lat_lon_on_image(bbox, filtered, nodes)
     for element in located_elements:
         print(element)

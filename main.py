@@ -6,7 +6,7 @@ import streamlit as st
 from folium.plugins import Draw
 from streamlit_folium import st_folium
 
-from utils.scrape import fetch_overpass_data, get_rbg_image, get_isolated_nodes, proj_lat_lon_on_image
+from utils.scrape import fetch_overpass_data, get_rbg_image, get_pure_nodes, proj_lat_lon_on_image
 from utils.model import chatModel
 from utils.retrieval_utils import evaluate_similarity, encode_information
 from LLaVA.llava.mm_utils import tokenizer_image_token, tokenizer_image_token, KeywordsStoppingCriteria
@@ -59,14 +59,15 @@ if st.button('Proceed'):
     # bbox = (bottom, left, top, right)
     
     image = get_rbg_image(bbox) # PIL Image
-    st.image(image)
+    st.image(image) # Show the image
     
     osm_data = fetch_overpass_data(bbox)
-    #print(osm_data)
     
-    nodes, filtered = get_isolated_nodes(osm_data)
+    nodes, filtered = get_pure_nodes(osm_data)
     located_elements = proj_lat_lon_on_image(bbox, filtered, nodes)
-    elements, elements_embeddings = encode_information(located_elements)
+    # for element in located_elements:
+    #     print(element)
+    elements_textual, elements_embeddings = encode_information(located_elements)
     #filtered_data = filter_osm_data(located_elements, elements_to_keep=["amenity", "building", "leisure"])
     
     # Start the chat by first describing the image 
@@ -120,7 +121,7 @@ if st.button('Proceed'):
         print(f"{controller.conversation.roles[1]}: ", end="")
         
         # Read the other question from CLI and retrieve the information
-        information = evaluate_similarity(inp, elements, elements_embeddings)
+        information = evaluate_similarity(inp, elements_textual, elements_embeddings)
         prompt = inp 
         
         # Insert info if necessary
