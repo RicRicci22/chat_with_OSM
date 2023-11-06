@@ -6,7 +6,7 @@ import streamlit as st
 from folium.plugins import Draw
 from streamlit_folium import st_folium
 
-from utils.scrape import fetch_overpass_data, get_rbg_image, get_pure_nodes, proj_lat_lon_on_image
+from utils.scrape import fetch_overpass_data, get_rbg_image, get_pure_nodes, proj_lat_lon_on_image, filter_keys
 from utils.model import chatModel
 from utils.retrieval_utils import evaluate_similarity, encode_information
 from LLaVA.llava.mm_utils import tokenizer_image_token, tokenizer_image_token, KeywordsStoppingCriteria
@@ -65,6 +65,7 @@ if st.button('Proceed'):
     
     nodes, filtered = get_pure_nodes(osm_data)
     located_elements = proj_lat_lon_on_image(bbox, filtered, nodes)
+    located_elements = filter_keys(located_elements, ["source", "attribution", "massgis", "gnis"]) # manually remove.. mmmm
     # for element in located_elements:
     #     print(element)
     elements_textual, elements_embeddings = encode_information(located_elements)

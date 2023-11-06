@@ -166,6 +166,16 @@ def get_pixel_dimension_in_meters(zoom, latitude):
     
     return pixel_dimensions[zoom][closest_latitude]
 
+def filter_keys(elements:List[Dict], keys_to_remove:List):
+    '''
+    This function filter a list of elements, eliminating all the keys that appear in the list keys_to_remove
+    '''
+    filtered_elements = []
+    for element in elements:
+        cleaned_element = {key: value for key, value in element.items() if not any(word in key for word in keys_to_remove)}
+        filtered_elements.append(cleaned_element)
+        
+    return filtered_elements
 
 def filter_osm_data(osm_data: List, elements_to_keep: List = []):
     """
