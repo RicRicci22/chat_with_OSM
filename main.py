@@ -14,7 +14,14 @@ from LLaVA.llava.mm_utils import process_images
 from LLaVA.llava.constants import DEFAULT_IMAGE_TOKEN, IMAGE_TOKEN_INDEX
 from transformers import TextStreamer
 
-m = folium.Map(location=[39.949610, -75.150282], zoom_start=5)
+m = folium.Map(location=[39.949610, -75.150282], zoom_start=5)#, tiles='OpenStreetMap')
+tile = folium.TileLayer(
+        tiles = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        attr = 'Esri',
+        name = 'Esri Satellite',
+        overlay = False,
+        control = True
+       ).add_to(m)
 Draw(export=True).add_to(m)
 
 output = st_folium(m, width=700, height=500)
@@ -66,8 +73,8 @@ if st.button('Proceed'):
     nodes, filtered = get_pure_nodes(osm_data)
     located_elements = proj_lat_lon_on_image(bbox, filtered, nodes)
     located_elements = filter_keys(located_elements, ["source", "attribution", "massgis", "gnis"]) # manually remove.. mmmm
-    # for element in located_elements:
-    #     print(element)
+    for element in located_elements:
+        print(element)
     elements_textual, elements_embeddings = encode_information(located_elements)
     #filtered_data = filter_osm_data(located_elements, elements_to_keep=["amenity", "building", "leisure"])
     

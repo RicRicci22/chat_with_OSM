@@ -173,34 +173,9 @@ def filter_keys(elements:List[Dict], keys_to_remove:List):
     filtered_elements = []
     for element in elements:
         cleaned_element = {key: value for key, value in element.items() if not any(word in key for word in keys_to_remove)}
-        filtered_elements.append(cleaned_element)
-        
-    return filtered_elements
-
-def filter_osm_data(osm_data: List, elements_to_keep: List = []):
-    """
-    Filters out latitude and longitude coordinates from OpenStreetMap (OSM) data elements.
-    For elements of the type 'way', includes only the name tag.
-
-    Parameters:
-    osm_data (Dict): The original OSM data in dictionary form.
-                     The dictionary must contain a key 'elements' that points to a list of dictionaries.
-                     Each dictionary in the list represents an OSM element and may contain the keys: 'type', 'id', 'lat', 'lon', 'tags', 'nodes', 'members'.
-    elements_to_keep (List): A list of strings representing the keys of the tags to keep. If the list is empty, all tags are kept.
-
-    Returns:
-    Dict: A new dictionary containing filtered elements. The 'lat' and 'lon' keys are removed from each element.
-          For 'way' elements, only the 'name' tag is included, and the 'nodes' key is removed.
-          
-    """
-    filtered_elements=[]
-    for element in osm_data:
-        # Keep if at least one of the tags is present in elements_to_keep 
-        for key in element.keys():
-            if key in elements_to_keep:
-                filtered_elements.append(element)
-                break
-            
+        if cleaned_element not in filtered_elements:
+            filtered_elements.append(cleaned_element)
+       
     return filtered_elements
 
 def get_center_way(nodes_id, nodes, debug=False):
