@@ -7,6 +7,7 @@ from folium.plugins import Draw
 from streamlit_folium import st_folium
 
 from utils.scrape import fetch_overpass_data, get_rbg_image, get_pure_nodes, proj_lat_lon_on_image, filter_keys
+from utils.general import get_bbox_bltr
 from utils.model import chatModel
 from utils.retrieval_utils import evaluate_similarity, encode_information
 from LLaVA.llava.mm_utils import tokenizer_image_token, tokenizer_image_token, KeywordsStoppingCriteria
@@ -14,47 +15,48 @@ from LLaVA.llava.mm_utils import process_images
 from LLaVA.llava.constants import DEFAULT_IMAGE_TOKEN, IMAGE_TOKEN_INDEX
 from transformers import TextStreamer
 
-m = folium.Map(location=[39.949610, -75.150282], zoom_start=5)#, tiles='OpenStreetMap')
-tile = folium.TileLayer(
-        tiles = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-        attr = 'Esri',
-        name = 'Esri Satellite',
-        overlay = False,
-        control = True
-       ).add_to(m)
-Draw(export=True).add_to(m)
+map = st.sidebar.selectbox(
+    'Choose the map layer',
+    ('osm_map', 'satellite_map')
+)
+
+if map == 'osm_map':
+    m = folium.Map(location=[39.949610, -75.150282], zoom_start=18)#, tiles='OpenStreetMap')
+    Draw(export=True).add_to(m)
+elif map == 'satellite_map':
+    m = folium.Map(location=[39.949610, -75.150282], zoom_start=18)
+    tile = folium.TileLayer(
+            tiles = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+            attr = 'Esri',
+            name = 'Esri Satellite',
+            overlay = False,
+            control = True
+        ).add_to(m)
+    
+    Draw(export=True).add_to(m)
 
 output = st_folium(m, width=700, height=500)
 
-def get_bbox_bltr(bbox_coords):
-    '''
-    This function returns the bbox in the format [bottom, left, top, right]
-    '''
-    latitudes = [x[1] for x in bbox_coords[0]]
-    longitudes = [x[0] for x in bbox_coords[0]]
-    bottom = min(latitudes)
-    top = max(latitudes)
-    left = min(longitudes)
-    right = max(longitudes)
+if 'controller' not in st.session_state:
+    controller = chatModel(model_path="liuhaotian/llava-v1.5-7b")
+    st.session_state['controller'] = controller
+    device = "cuda:0"
+    st.session_state["controller"].load_model(device=device)
     
-    return [bottom, left, top, right]
-
 # Let the user choose the model
 model = st.sidebar.selectbox(
     'Choose the model',
-    ('llava2-7b',)
+    ('liuhaotian/llava-v1.5-7b',)
 )
-
-if 'controller' not in st.session_state:
-    controller = chatModel(model_name="liuhaotian/llava-v1.5-7b")
-    st.session_state['controller'] = controller
 
 # Load the model
 if st.sidebar.button('Load model'):
-    device = "cuda:0"
-    if model == 'llava2-7b':
-        if "controller" in st.session_state:
-            st.session_state["controller"].load_model(device=device)
+    if st.session_state['controller'].model_path != model:
+        print("How")
+        st.session_state['controller'].remove_model()
+        st.session_state['controller'].model_path = model
+        # Load the new model
+        st.session_state["controller"].load_model(device=device)
 
 
 if st.button('Proceed'):
@@ -111,9 +113,8 @@ if st.button('Proceed'):
     controller.conversation.messages[-1][-1] = out
     
     # Append information of osm to the chat
-    info_addition = " Here is some external informations about the area in the image. Each piece is enclosed by curly brakets." \
-                    "If you find them useful to answer to the user, use them. Answer concisely and clearly to the questions. " \
-                    "If the user is satisfied, reply with kind words and wait for the next question." \
+    info_addition = "Before interacting with you, I provide some external information about the area in the image. Each piece is enclosed by curly brakets. " \
+                    "If you find it useful to reply to my interrogation, use it. Reply concisely and clearly, following my interrogations. " \
     
     streamer = TextStreamer(controller.tokenizer, skip_prompt=True, skip_special_tokens=True)
     
@@ -130,13 +131,19 @@ if st.button('Proceed'):
         
         # Read the other question from CLI and retrieve the information
         information = evaluate_similarity(inp, elements_textual, elements_embeddings)
-        prompt = inp 
         
         # Insert info if necessary
         if len(information)!=0:
-            prompt += info_addition + "\n"
+            prompt = info_addition + "\n"
             for info in information:
                 prompt+="{"+info+"}"+"\n"
+        prompt+= inp 
+        
+        # # Insert info if necessary
+        # if len(information)!=0:
+        #     prompt += info_addition + "\n"
+        #     for info in information:
+        #         prompt+="{"+info+"}"+"\n"
         
         #inp+=" If you need more information, reply with the keyword 'get more data'."
         controller.append_message(controller.conversation.roles[0], prompt)

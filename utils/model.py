@@ -8,15 +8,21 @@ from LLaVA.llava.mm_utils import get_model_name_from_path
 from LLaVA.llava.conversation import conv_templates
 
 class chatModel:
-    def __init__(self, model_name):
-        self.model_name = model_name
+    def __init__(self, model_path):
+        '''
+        Keep track of all the operations done on the model. 
+        Inputs:
+            model_path: the path of the model to load (in huggingface format)
+        '''
+        self.model_path = model_path
     
     def load_model(self, device):
         disable_torch_init()
-        model_name = get_model_name_from_path("liuhaotian/llava-v1.5-7b")
-        self.tokenizer, self.model, self.image_processor, self.context_len = load_pretrained_model("liuhaotian/llava-v1.5-7b", None, model_name, load_8bit=False, load_4bit=True, device=device)
+        model_name = get_model_name_from_path(self.model_path)
+        # Load the model 
+        self.tokenizer, self.model, self.image_processor, self.context_len = load_pretrained_model(self.model_path, None, model_name, load_8bit=False, load_4bit=True, device=device)
         
-        # CHOOSE THE RIGHT CONVERSATION FORMAT
+        # Load the conversation format
         if 'llama-2' in model_name.lower():
             self.conv_mode = "llava_llama_2"
         elif "v1" in model_name.lower():
@@ -29,6 +35,16 @@ class chatModel:
         self.device = device
         print("Model context length: ", self.context_len)
         print("Model loaded!")
+    
+    def remove_model(self):
+        '''
+        Function to remove the model from the memory
+        '''
+        del self.tokenizer
+        del self.model
+        del self.image_processor
+        del self.context_len
+        print("Model removed!")
     
     def start_chat(self):
         self.conversation = conv_templates[self.conv_mode].copy()

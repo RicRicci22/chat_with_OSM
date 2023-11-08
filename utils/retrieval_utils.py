@@ -63,7 +63,7 @@ def evaluate_similarity(query, elements_textual, elements_embeddings):
     Outputs:
         the list of similarities
     '''
-    model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2') # sentence-transformers/all-MiniLM-L6-v2
+    model = SentenceTransformer('sentence-transformers/multi-qa-MiniLM-L6-cos-v1') # sentence-transformers/all-MiniLM-L6-v2
     
     # Encode the query
     query_embedding = model.encode(query, normalize_embeddings=True).reshape(1, -1)
@@ -74,7 +74,10 @@ def evaluate_similarity(query, elements_textual, elements_embeddings):
     similarities = sorted(enumerate(similarities), key=lambda x: x[1], reverse=True)
     
     # Return the first 2 results
-    return [elements_textual[i[0]] for i in similarities[:2]]
+    #return [elements_textual[i[0]] for i in similarities[:2]]
     
-    # Return all the sentences that have a similarity of 0.4 or higher
-    #return [elements_textual[i[0]] for i in similarities if i[1]>=0.4]
+    #Return all the sentences that have a similarity of 0.4 or higher
+    return [elements_textual[i[0]] for i in similarities if i[1]>=0.4]
+
+
+# https://www.sbert.net/docs/pretrained_models.html#sentence-embedding-models/ HAVE A LOOK AT THIS AFTER CONVERTING TO NATURAL LANGUAGE SENTENCES especially the passage on MULTI-QA
