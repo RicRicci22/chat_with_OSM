@@ -64,8 +64,8 @@ if st.button('Proceed'):
     
     bbox = get_bbox_bltr(last_bbox["geometry"]["coordinates"])
     
-    # bottom, left, top, right = 46.04496229703382,10.98408579826355,46.04642930052508,10.986006259918213  # Parco Nadac, in Calavino, my place :)
-    # bbox = (bottom, left, top, right)
+    print(bbox)
+    bbox = [39.948972, -75.150771, 39.950494, -75.148968] # KEEP ALWAYS THE SAME BBOX
     
     image = get_rbg_image(bbox) # PIL Image
     st.image(image) # Show the image
@@ -78,7 +78,6 @@ if st.button('Proceed'):
     for element in located_elements:
         print(element)
     elements_textual, elements_embeddings = encode_information(located_elements)
-    #filtered_data = filter_osm_data(located_elements, elements_to_keep=["amenity", "building", "leisure"])
     
     # Start the chat by first describing the image 
     controller = st.session_state["controller"]
@@ -137,7 +136,9 @@ if st.button('Proceed'):
             prompt = info_addition + "\n"
             for info in information:
                 prompt+="{"+info+"}"+"\n"
-        prompt+= inp 
+            prompt+= inp 
+        else:
+            prompt= inp 
         
         # # Insert info if necessary
         # if len(information)!=0:
