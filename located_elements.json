@@ -1,0 +1,599 @@
+[
+    {
+        "highway": "traffic_signals",
+        "position": "bottom right"
+    },
+    {
+        "addr:city": "Philadelphia",
+        "addr:state": "PA",
+        "historic": "bell",
+        "name": "Liberty Bell",
+        "name:de": "Freiheitsglocke",
+        "position": "bottom left",
+        "tourism": "attraction",
+        "wheelchair": "yes",
+        "wikidata": "Q390306",
+        "wikipedia": "en:Liberty Bell"
+    },
+    {
+        "amenity": "drinking_water",
+        "position": "bottom right"
+    },
+    {
+        "crossing": "marked",
+        "crossing:markings": "yes",
+        "highway": "crossing",
+        "position": "bottom right",
+        "tactile_paving": "no"
+    },
+    {
+        "crossing": "marked",
+        "crossing:markings": "yes",
+        "highway": "crossing",
+        "position": "bottom left",
+        "tactile_paving": "no"
+    },
+    {
+        "man_made": "flagpole",
+        "position": "bottom center"
+    },
+    {
+        "highway": "traffic_signals",
+        "position": "bottom left"
+    },
+    {
+        "position": "top right",
+        "railway": "subway_entrance"
+    },
+    {
+        "entrance": "main",
+        "position": "top left"
+    },
+    {
+        "artwork_type": "statue",
+        "historic": "memorial",
+        "memorial": "statue",
+        "position": "bottom center",
+        "tourism": "artwork"
+    },
+    {
+        "natural": "tree",
+        "position": "center"
+    },
+    {
+        "natural": "tree",
+        "position": "top center"
+    },
+    {
+        "natural": "tree",
+        "position": "top right"
+    },
+    {
+        "barrier": "kerb",
+        "kerb": "lowered",
+        "position": "bottom left",
+        "tactile_paving": "no"
+    },
+    {
+        "barrier": "kerb",
+        "kerb": "lowered",
+        "position": "bottom right",
+        "tactile_paving": "no"
+    },
+    {
+        "crossing": "marked",
+        "crossing:markings": "yes",
+        "highway": "crossing",
+        "position": "center right"
+    },
+    {
+        "natural": "tree",
+        "position": "bottom left"
+    },
+    {
+        "natural": "tree",
+        "position": "center left"
+    },
+    {
+        "natural": "tree",
+        "position": "top left"
+    },
+    {
+        "crossing": "marked",
+        "crossing:markings": "yes",
+        "highway": "crossing",
+        "position": "center left"
+    },
+    {
+        "amenity": "restaurant",
+        "name": "Red Owl Tavern",
+        "outdoor_seating": "yes",
+        "position": "bottom right"
+    },
+    {
+        "highway": "residential",
+        "name": "Ranstead Street",
+        "parking:lane:both": "no",
+        "position": "center right",
+        "surface": "asphalt",
+        "tiger:cfcc": "A41",
+        "tiger:name_base": "Ranstead",
+        "tiger:name_type": "St",
+        "tiger:reviewed": "no",
+        "tiger:zip_left": "19106",
+        "tiger:zip_right": "19106"
+    },
+    {
+        "highway": "residential",
+        "name": "Ludlow Street",
+        "oneway": "yes",
+        "parking:lane:both": "no",
+        "position": "top right",
+        "sidewalk": "both",
+        "surface": "asphalt",
+        "tiger:cfcc": "A41",
+        "tiger:name_base": "Ludlow",
+        "tiger:name_type": "St",
+        "tiger:reviewed": "no",
+        "tiger:zip_left": "19106",
+        "tiger:zip_right": "19106"
+    },
+    {
+        "addr:city": "Philadelphia",
+        "addr:housenumber": "520",
+        "addr:postcode": "19106",
+        "addr:state": "PA",
+        "addr:street": "Chestnut Street",
+        "building": "yes",
+        "building:material": "brick",
+        "ele": "9",
+        "historic": "yes",
+        "name": "Independence Hall",
+        "name:de": "Unabh\u00e4ngigkeitshalle",
+        "position": "bottom left",
+        "ref:nrhp": "66000683",
+        "tourism": "attraction",
+        "website": "https://www.nps.gov/inde/planyourvisit/independencehall.htm",
+        "wikidata": "Q390028",
+        "wikipedia": "en:Independence Hall"
+    },
+    {
+        "leisure": "park",
+        "name": "Liberty Bell Center",
+        "position": "center"
+    },
+    {
+        "bicycle": "no",
+        "highway": "footway",
+        "position": "center right",
+        "surface": "paving_stones"
+    },
+    {
+        "bicycle": "no",
+        "highway": "footway",
+        "position": "top right",
+        "surface": "paving_stones"
+    },
+    {
+        "highway": "footway",
+        "position": "center",
+        "surface": "paving_stones"
+    },
+    {
+        "addr:city": "Philadelphia",
+        "addr:postcode": "19106",
+        "addr:state": "PA",
+        "building": "yes",
+        "building:levels": "2",
+        "building:material": "brick",
+        "ele": "9",
+        "historic": "building",
+        "name": "Congress Hall",
+        "name:de": "Kongresshalle",
+        "position": "bottom left",
+        "tourism": "museum",
+        "website": "https://www.nps.gov/inde/planyourvisit/congresshall.htm",
+        "wikidata": "Q917636",
+        "wikipedia": "en:Congress Hall"
+    },
+    {
+        "addr:city": "Philadelphia",
+        "building": "yes",
+        "building:material": "brick",
+        "height": "3.2",
+        "name": "Old City Hall",
+        "name:de": "Altes Rathaus",
+        "position": "bottom right",
+        "tourism": "museum",
+        "wikidata": "Q3350184",
+        "wikipedia": "en:Old City Hall (Philadelphia)"
+    },
+    {
+        "addr:city": "Philadelphia",
+        "addr:housenumber": "526",
+        "addr:postcode": "19106",
+        "addr:street": "Market Street",
+        "building": "yes",
+        "name": "Liberty Bell Center",
+        "opening_hours": "Mo-Su 09:00-17:00",
+        "position": "center left",
+        "tourism": "museum",
+        "website": "https://www.nps.gov/inde/planyourvisit/libertybellcenter.htm"
+    },
+    {
+        "cycleway:right": "lane",
+        "cycleway:right:buffer": "no",
+        "highway": "tertiary",
+        "lanes": "2",
+        "name": "South 5th Street",
+        "old_ref_legislative": "67005",
+        "oneway": "yes",
+        "parking:lane:both": "no",
+        "position": "center right",
+        "ref:penndot": "SR 2003",
+        "sidewalk": "both",
+        "surface": "asphalt"
+    },
+    {
+        "highway": "footway",
+        "position": "bottom right",
+        "surface": "paving_stones"
+    },
+    {
+        "historic": "ruins",
+        "name": "President's House",
+        "position": "top center",
+        "tourism": "attraction",
+        "website": "https://www.nps.gov/inde/planyourvisit/presidentshousesite.htm",
+        "wikidata": "Q3402408",
+        "wikipedia": "en:President's House (Philadelphia)"
+    },
+    {
+        "cycleway:right": "lane",
+        "cycleway:right:buffer": "no",
+        "highway": "tertiary",
+        "lanes": "3",
+        "name": "South 6th Street",
+        "oneway": "yes",
+        "position": "center left",
+        "ref:penndot": "SR2005",
+        "surface": "asphalt",
+        "turn:lanes": "left||"
+    },
+    {
+        "amenity": "toilets",
+        "building": "yes",
+        "building:levels": "1",
+        "building:material": "brick",
+        "position": "bottom right"
+    },
+    {
+        "bicycle": "no",
+        "highway": "footway",
+        "position": "bottom center",
+        "surface": "paving_stones"
+    },
+    {
+        "bicycle": "no",
+        "footway": "sidewalk",
+        "highway": "footway",
+        "position": "bottom right"
+    },
+    {
+        "footway": "sidewalk",
+        "highway": "footway",
+        "position": "bottom right",
+        "surface": "paving_stones"
+    },
+    {
+        "bicycle": "yes",
+        "highway": "tertiary",
+        "lanes": "1",
+        "maxspeed": "40",
+        "name": "Chestnut Street",
+        "old_ref_legislative": "67318",
+        "oneway": "yes",
+        "parking:lane:both": "no",
+        "position": "bottom left",
+        "ref:penndot": "SR 3008",
+        "shoulder": "no",
+        "surface": "paving_stones"
+    },
+    {
+        "highway": "footway",
+        "position": "top center",
+        "surface": "paving_stones"
+    },
+    {
+        "bicycle": "no",
+        "highway": "footway",
+        "position": "center",
+        "surface": "paving_stones"
+    },
+    {
+        "footway": "sidewalk",
+        "highway": "footway",
+        "lit": "yes",
+        "position": "bottom left",
+        "surface": "paving_stones"
+    },
+    {
+        "bicycle": "no",
+        "footway": "sidewalk",
+        "highway": "footway",
+        "position": "center right",
+        "surface": "paving_stones"
+    },
+    {
+        "building:levels": "3",
+        "building:material": "brick",
+        "building:part": "yes",
+        "height": "12.6302",
+        "position": "bottom left",
+        "roof:shape": "gabled"
+    },
+    {
+        "building:levels": "2",
+        "building:material": "brick",
+        "building:part": "yes",
+        "height": "6.2",
+        "position": "bottom left",
+        "roof:height": "2.7",
+        "roof:shape": "hipped"
+    },
+    {
+        "building:levels": "2",
+        "building:material": "brick",
+        "building:part": "yes",
+        "height": "5.2",
+        "position": "bottom left",
+        "roof:height": "1.70497",
+        "roof:orientation": "along",
+        "roof:shape": "hipped"
+    },
+    {
+        "building:levels": "3",
+        "building:part": "yes",
+        "position": "bottom left"
+    },
+    {
+        "building:levels": "2",
+        "building:material": "brick",
+        "building:part": "yes",
+        "position": "bottom left"
+    },
+    {
+        "building:part": "yes",
+        "position": "bottom left"
+    },
+    {
+        "building:levels": "1",
+        "building:part": "yes",
+        "position": "center left",
+        "roof:shape": "gabled"
+    },
+    {
+        "building:levels": "2",
+        "building:part": "yes",
+        "position": "center left",
+        "roof:shape": "hipped"
+    },
+    {
+        "building:levels": "1",
+        "building:part": "yes",
+        "position": "center left",
+        "roof:shape": "flat"
+    },
+    {
+        "highway": "footway",
+        "position": "center left"
+    },
+    {
+        "bicycle": "no",
+        "footway": "sidewalk",
+        "highway": "footway",
+        "position": "center left"
+    },
+    {
+        "barrier": "wall",
+        "position": "center left"
+    },
+    {
+        "barrier": "wall",
+        "material": "brick",
+        "position": "center left"
+    },
+    {
+        "barrier": "wall",
+        "material": "brick",
+        "position": "top left"
+    },
+    {
+        "barrier": "wall",
+        "material": "brick",
+        "position": "center right"
+    },
+    {
+        "barrier": "wall",
+        "material": "brick",
+        "position": "top right"
+    },
+    {
+        "highway": "footway",
+        "position": "center right",
+        "surface": "paving_stones"
+    },
+    {
+        "footway": "sidewalk",
+        "highway": "footway",
+        "position": "bottom right"
+    },
+    {
+        "cycleway:right": "lane",
+        "cycleway:right:buffer": "yes",
+        "highway": "tertiary",
+        "lanes": "2",
+        "name": "South 6th Street",
+        "oneway": "yes",
+        "parking:lane:left": "no",
+        "parking:lane:right": "parallel",
+        "parking:lane:right:parallel": "on_street",
+        "position": "center left",
+        "ref:penndot": "SR2005",
+        "surface": "asphalt"
+    },
+    {
+        "landuse": "grass",
+        "position": "bottom center"
+    },
+    {
+        "landuse": "grass",
+        "position": "center"
+    },
+    {
+        "landuse": "grass",
+        "position": "top right"
+    },
+    {
+        "bicycle": "no",
+        "crossing": "marked",
+        "crossing:markings": "yes",
+        "footway": "crossing",
+        "highway": "footway",
+        "position": "top right",
+        "surface": "asphalt"
+    },
+    {
+        "highway": "footway",
+        "lit": "yes",
+        "position": "bottom left",
+        "surface": "paving_stones"
+    },
+    {
+        "crossing": "marked",
+        "crossing:markings": "yes",
+        "footway": "crossing",
+        "highway": "footway",
+        "lit": "yes",
+        "position": "bottom left",
+        "surface": "asphalt"
+    },
+    {
+        "leisure": "garden",
+        "position": "center right"
+    },
+    {
+        "leisure": "garden",
+        "position": "top right"
+    },
+    {
+        "highway": "footway",
+        "position": "top right",
+        "surface": "paving_stones"
+    },
+    {
+        "footway": "sidewalk",
+        "highway": "footway",
+        "position": "center right",
+        "surface": "concrete:plates"
+    },
+    {
+        "crossing": "marked",
+        "crossing:markings": "yes",
+        "footway": "crossing",
+        "highway": "footway",
+        "position": "center right"
+    },
+    {
+        "bicycle": "yes",
+        "highway": "tertiary",
+        "lanes": "1",
+        "lit": "yes",
+        "maxspeed": "40",
+        "name": "Chestnut Street",
+        "old_ref_legislative": "67318",
+        "oneway": "yes",
+        "parking:lane:both": "no",
+        "position": "bottom left",
+        "ref:penndot": "SR 3008",
+        "shoulder": "no",
+        "sidewalk": "both",
+        "surface": "asphalt"
+    },
+    {
+        "highway": "footway",
+        "position": "top left",
+        "surface": "paving_stones"
+    },
+    {
+        "leisure": "park",
+        "name": "Independence Square",
+        "position": "bottom center",
+        "wheelchair": "no"
+    },
+    {
+        "bicycle": "no",
+        "footway": "sidewalk",
+        "highway": "footway",
+        "lit": "yes",
+        "position": "bottom center",
+        "surface": "paving_stones"
+    },
+    {
+        "bicycle": "no",
+        "footway": "sidewalk",
+        "highway": "footway",
+        "lit": "yes",
+        "position": "bottom left",
+        "surface": "paving_stones"
+    },
+    {
+        "footway": "sidewalk",
+        "highway": "footway",
+        "lit": "yes",
+        "position": "center left",
+        "surface": "paving_stones"
+    },
+    {
+        "crossing": "marked",
+        "crossing:markings": "yes",
+        "footway": "crossing",
+        "highway": "footway",
+        "position": "center left"
+    },
+    {
+        "footway": "sidewalk",
+        "highway": "footway",
+        "position": "center left"
+    },
+    {
+        "highway": "residential",
+        "name": "Ranstead Street",
+        "position": "center left",
+        "sidewalk": "both",
+        "tiger:cfcc": "A41",
+        "tiger:name_base": "Ranstead",
+        "tiger:name_type": "St",
+        "tiger:reviewed": "no",
+        "tiger:zip_left": "19107",
+        "tiger:zip_right": "19107"
+    },
+    {
+        "amenity": "parking",
+        "position": "center left"
+    },
+    {
+        "cycleway:right": "lane",
+        "cycleway:right:buffer": "no",
+        "highway": "tertiary",
+        "lanes": "2",
+        "name": "South 6th Street",
+        "oneway": "yes",
+        "parking:lane:left": "no",
+        "parking:lane:right": "parallel",
+        "parking:lane:right:parallel": "on_street",
+        "position": "center left",
+        "ref:penndot": "SR2005",
+        "surface": "asphalt"
+    }
+]

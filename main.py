@@ -2,6 +2,7 @@
 This script launch a webapp that let you choose a bounding box and download the corresponding satellite image, then it starts the chat using llava model and OSM data. 
 '''
 import folium
+import json
 import streamlit as st
 from folium.plugins import Draw
 from streamlit_folium import st_folium
@@ -14,6 +15,21 @@ from LLaVA.llava.mm_utils import tokenizer_image_token, tokenizer_image_token, K
 from LLaVA.llava.mm_utils import process_images
 from LLaVA.llava.constants import DEFAULT_IMAGE_TOKEN, IMAGE_TOKEN_INDEX
 from transformers import TextStreamer
+from copy import deepcopy
+
+# Let the user choose the model
+model = st.sidebar.selectbox(
+    'Choose the model',
+    ('liuhaotian/llava-v1.5-7b',)
+)
+
+# # Load the model
+device = "cuda:0"
+if "controller" not in st.session_state:
+    with st.spinner('Loading model...'):
+        controller = chatModel(model_path=model)
+        controller.load_model(device=device)
+        st.session_state["controller"] = controller
 
 map = st.sidebar.selectbox(
     'Choose the map layer',
@@ -37,34 +53,25 @@ elif map == 'satellite_map':
 
 output = st_folium(m, width=700, height=500)
 
-if 'controller' not in st.session_state:
-    controller = chatModel(model_path="liuhaotian/llava-v1.5-7b")
-    st.session_state['controller'] = controller
-    device = "cuda:0"
-    st.session_state["controller"].load_model(device=device)
-    
-# Let the user choose the model
-model = st.sidebar.selectbox(
-    'Choose the model',
-    ('liuhaotian/llava-v1.5-7b',)
-)
-
 # Load the model
 if st.sidebar.button('Load model'):
-    if st.session_state['controller'].model_path != model:
-        print("How")
-        st.session_state['controller'].remove_model()
-        st.session_state['controller'].model_path = model
+    device = "cuda:0"
+    if st.session_state["controller"].model_path != model:
+        st.session_state["controller"].remove_model()
+        st.session_state["controller"].model_path = model
         # Load the new model
         st.session_state["controller"].load_model(device=device)
 
 
 if st.button('Proceed'):
+    # Retrieve the controller
+    controller = st.session_state["controller"]
+    
     last_bbox = output['last_active_drawing']
     
-    bbox = get_bbox_bltr(last_bbox["geometry"]["coordinates"])
+    #bbox = get_bbox_bltr(last_bbox["geometry"]["coordinates"])
     
-    print(bbox)
+    #print(bbox)
     bbox = [39.948972, -75.150771, 39.950494, -75.148968] # KEEP ALWAYS THE SAME BBOX
     
     image = get_rbg_image(bbox) # PIL Image
@@ -75,13 +82,13 @@ if st.button('Proceed'):
     nodes, filtered = get_pure_nodes(osm_data)
     located_elements = proj_lat_lon_on_image(bbox, filtered, nodes)
     located_elements = filter_keys(located_elements, ["source", "attribution", "massgis", "gnis"]) # manually remove.. mmmm
-    for element in located_elements:
-        print(element)
+    # Save located elements in a pkl file
+    with open("located_elements.json", "w") as f:
+        json.dump(located_elements, f, indent=4, sort_keys=True)
+    
     elements_textual, elements_embeddings = encode_information(located_elements)
     
     # Start the chat by first describing the image 
-    controller = st.session_state["controller"]
-    
     controller.start_chat()
     
     # prompt="You are an assistant that can understand image contents and interact with me using text. I provided an image to you, for which I will sumbit queries. " \
@@ -113,7 +120,7 @@ if st.button('Proceed'):
     
     # Append information of osm to the chat
     info_addition = "Before interacting with you, I provide some external information about the area in the image. Each piece is enclosed by curly brakets. " \
-                    "If you find it useful to reply to my interrogation, use it. Reply concisely and clearly, following my interrogations. " \
+                    "If you find it useful to reply to my interrogation, use it. Reply to me concisely and clearly. " \
     
     streamer = TextStreamer(controller.tokenizer, skip_prompt=True, skip_special_tokens=True)
     
@@ -167,5 +174,3 @@ if st.button('Proceed'):
         controller.conversation.messages[-2][-1] = inp 
         
         prompt=""
-        
-

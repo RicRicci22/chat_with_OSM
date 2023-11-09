@@ -67,7 +67,6 @@ class chatModel:
     def generate(self, input_ids, image_tensor, temperature=0.9, max_new_tokens=100, stopping_criteria=None, streamer=None):
         
         image_tensor = image_tensor.to(self.device,dtype=torch.float16)
-        
         with torch.inference_mode():
             output_ids = self.model.generate(
                 input_ids,

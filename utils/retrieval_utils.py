@@ -1,7 +1,7 @@
 '''
 This module serves as a container of functions needed for retrieval
 '''
-
+from transformers import AutoTokenizer, AutoModelForCausalLM
 from sentence_transformers import SentenceTransformer
 from typing import List, Dict
 
@@ -18,25 +18,46 @@ def count_buildings(list_elements:List[Dict]):
     
     return "there are "+str(count)+" buildings in the image"
 
-def convert_dict_to_sentence(list_elements:List[Dict]):
+def convert_element_to_sentence(list_elements:List[Dict], llm=False):
+    '''
+    It is currently not working with llm = True
+    '''
     sentences = []
-    sentence = ""
-    for element in list_elements:
-        for key, value in element.items():
-            if "tiger" in key:
-                continue
-            key = key.replace("_", " ")
-            key = key.replace(":", " ")
-            value = value.replace("_", " ")
-            value = value.replace(":", " ")
-              
-            if key=="position":
-                sentence+="located in the "+str(value)+" of the image, "  
-            else:
-                sentence+="the " + str(key)+" is "+str(value)+", "
+    if llm:
+        # Convert in sentence using a LLM (vicuna)
+        # Load the model
+        model_name_or_path = "TheBloke/vicuna-13B-v1.5-GPTQ"
+        # To use a different branch, change revision
+        # For example: revision="main"
+        model = AutoModelForCausalLM.from_pretrained(model_name_or_path,
+                                                    device_map="auto",
+                                                    trust_remote_code=False,
+                                                    revision="main")
 
-        sentences.append(sentence[:-2])
-        sentence=""
+        tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, use_fast=True)
+    
+        for element in list_elements:
+            prompt=f'''A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions. USER: {str(element)} ASSISTANT:'''
+            input_ids = tokenizer(prompt, return_tensors='pt').input_ids.cuda()
+            output = model.generate(inputs=input_ids, temperature=0.7, do_sample=True, top_p=0.95, top_k=40, max_new_tokens=512)
+            #print(tokenizer.decode(output[0]))
+    else:
+        for element in list_elements:
+            sentence = ""
+            for key, value in element.items():
+                if "tiger" in key:
+                    continue
+                key = key.replace("_", " ")
+                key = key.replace(":", " ")
+                value = value.replace("_", " ")
+                value = value.replace(":", " ")
+                
+                if key=="position":
+                    sentence+="located in the "+str(value)+" of the image, "  
+                else:
+                    sentence+="the " + str(key)+" is "+str(value)+", "
+
+            sentences.append(sentence[:-2])
     
     sentences = list(set(sentences)) # remove duplicates
     sentences.append(count_buildings(list_elements))
@@ -48,7 +69,7 @@ def encode_information(list_elements):
     This function is called once per image, and encodes the information from openstreetmap using an embedding model
     '''
     model = SentenceTransformer('BAAI/bge-small-en-v1.5') # sentence-transformers/all-MiniLM-L6-v2
-    sentences = convert_dict_to_sentence(list_elements)
+    sentences = convert_element_to_sentence(list_elements, llm=False)
     sentence_embeddings = model.encode(sentences, normalize_embeddings=True)
     del model
     
