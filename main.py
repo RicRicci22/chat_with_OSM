@@ -15,12 +15,11 @@ from LLaVA.llava.mm_utils import tokenizer_image_token, tokenizer_image_token, K
 from LLaVA.llava.mm_utils import process_images
 from LLaVA.llava.constants import DEFAULT_IMAGE_TOKEN, IMAGE_TOKEN_INDEX
 from transformers import TextStreamer
-from copy import deepcopy
 
 # Let the user choose the model
 model = st.sidebar.selectbox(
     'Choose the model',
-    ('liuhaotian/llava-v1.5-7b',)
+    ('liuhaotian/llava-v1.5-7b','liuhaotian/llava-v1.5-13b')
 )
 
 # # Load the model
@@ -86,7 +85,7 @@ if st.button('Proceed'):
     with open("located_elements.json", "w") as f:
         json.dump(located_elements, f, indent=4, sort_keys=True)
     
-    elements_textual, elements_embeddings = encode_information(located_elements)
+    raw_sent, raw_sent_emb, refined_sent, refined_sent_emb = encode_information(located_elements)
     
     # Start the chat by first describing the image 
     controller.start_chat()
@@ -136,7 +135,8 @@ if st.button('Proceed'):
         print(f"{controller.conversation.roles[1]}: ", end="")
         
         # Read the other question from CLI and retrieve the information
-        information = evaluate_similarity(inp, elements_textual, elements_embeddings)
+        information = evaluate_similarity(inp, raw_sent, raw_sent_emb)
+        information = evaluate_similarity(inp, refined_sent, refined_sent_emb)
         
         # Insert info if necessary
         if len(information)!=0:
@@ -159,8 +159,8 @@ if st.button('Proceed'):
         
         prompt = controller.get_prompt()
         
-        print(prompt)
-        print("\n")
+        # print(prompt)
+        # print("\n")
         
         input_ids = tokenizer_image_token(prompt, controller.tokenizer, IMAGE_TOKEN_INDEX, return_tensors='pt').unsqueeze(0).to(controller.device)
         keywords = ["</s>"]
